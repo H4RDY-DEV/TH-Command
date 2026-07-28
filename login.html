@@ -1,11 +1,30 @@
-<!doctype html><html><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="./assets/css/app.css"></head>
-<body class="login"><form id="login">
-<h2>TH Command Login</h2>
-<input required placeholder="Username">
-<input required type="password" placeholder="Password">
-<button type="submit">Login</button>
-</form>
-<script type="module" src="./assets/js/login.js"></script>
-</body></html>
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050b14">
+  <title>Sign in · TH Command</title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body class="auth-body">
+  <main class="auth-card">
+    <div class="brand-mark">TH</div>
+    <p class="eyebrow">TH Technical</p>
+    <h1>TH Command</h1>
+    <p class="muted">Event Production ERP</p>
+    <form id="login-form" class="auth-form">
+      <label>Email
+        <input id="email" type="email" value="admin@th-technical.co.uk" autocomplete="email" required>
+      </label>
+      <label>Password
+        <input id="password" type="password" value="command" autocomplete="current-password" required>
+      </label>
+      <button class="button primary" type="submit">Sign in</button>
+      <p id="login-error" class="form-error" hidden></p>
+    </form>
+    <small class="muted">Demo login: any valid email and any password.</small>
+  </main>
+  <script type="module" src="/assets/js/login.js"></script>
+</body>
+</html>

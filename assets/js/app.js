@@ -1,19 +1,51 @@
+import {renderDashboard} from './modules/dashboard.js';
+import {renderJobs} from './modules/jobs.js';
+import {renderPlaceholder} from './modules/placeholders.js';
 
-const app=document.getElementById('app');
-const sidebar=document.getElementById('sidebar');
-if(!localStorage.getItem('th_logged_in')) location.href='./login.html';
-sidebar.innerHTML=`<h2>Navigation</h2>
-<a href="#dashboard">Dashboard</a>
-<a href="#jobs">Jobs</a>
-<a href="#assets">Assets</a>
-<a href="#warehouse">Warehouse</a>
-<a href="#" id="logout">Logout</a>`;
-document.getElementById('logout').onclick=e=>{e.preventDefault();localStorage.removeItem('th_logged_in');location.href='./login.html';};
-const pages={
-"#dashboard":"<h2>Dashboard</h2><div class='cards'><div class='card'>Jobs: 0</div><div class='card'>Assets: 0</div><div class='card'>Crew: 0</div></div>",
-"#jobs":"<h2>Jobs</h2><p>Module coming soon.</p>",
-"#assets":"<h2>Assets</h2><p>Module coming soon.</p>",
-"#warehouse":"<h2>Warehouse</h2><p>Module coming soon.</p>"
+if(!localStorage.getItem('th_command_session')) location.replace('/login.html');
+
+const routes={
+  dashboard:renderDashboard,
+  jobs:renderJobs,
+  assets:()=>renderPlaceholder('Assets','Equipment records, serial numbers, service history and availability.'),
+  warehouse:()=>renderPlaceholder('Warehouse','Prep lists, scanning, dispatch and returns.'),
+  clients:()=>renderPlaceholder('CRM','Clients, contacts, venues and communication history.'),
+  crew:()=>renderPlaceholder('Crew','Staff, freelancers, skills, availability and assignments.'),
+  finance:()=>renderPlaceholder('Finance','Quotes, invoices, purchase orders and reporting.'),
+  settings:()=>renderPlaceholder('Settings','Users, permissions, company details and system preferences.')
 };
-function render(){app.innerHTML=pages[location.hash||"#dashboard"]||"<h2>404</h2>";}
-window.addEventListener("hashchange",render);render();
+
+const nav=[
+  ['dashboard','⌂','Dashboard'],['jobs','▣','Jobs'],['assets','◈','Assets'],['warehouse','▤','Warehouse'],
+  ['clients','◎','CRM'],['crew','♙','Crew'],['finance','£','Finance'],['settings','⚙','Settings']
+];
+
+document.querySelector('#app').innerHTML=`
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-mark">TH</div><div class="brand-copy"><strong>TH Command</strong><span>Event Production ERP</span></div></div>
+    <nav class="nav">${nav.map(([key,icon,label])=>`<a class="nav-link" data-route="${key}" href="#${key}"><span class="nav-icon">${icon}</span>${label}</a>`).join('')}</nav>
+    <div class="sidebar-bottom"><div class="user-tile"><div class="avatar">TH</div><div><strong>Tyler</strong><small class="muted" style="display:block">Administrator</small></div></div><button class="button" id="logout" style="width:100%;margin-top:8px">Sign out</button></div>
+  </aside>
+  <section class="main-shell">
+    <header class="topbar"><button class="button small mobile-menu" id="menu-button">Menu</button><div class="topbar-title" id="route-title">Dashboard</div><div class="topbar-spacer"></div><input class="search-box" placeholder="Search TH Command…"><span class="badge confirmed">Online</span></header>
+    <main class="content" id="view"></main>
+  </section>
+</div>`;
+
+function currentRoute(){return (location.hash.slice(1).split('?')[0]||'dashboard');}
+function render(){
+  const route=currentRoute();
+  const view=document.querySelector('#view');
+  const renderer=routes[route]||(()=>renderPlaceholder('Page not found','The requested module does not exist.'));
+  view.innerHTML=renderer();
+  document.querySelectorAll('[data-route]').forEach(link=>link.classList.toggle('active',link.dataset.route===route));
+  const item=nav.find(n=>n[0]===route);
+  document.querySelector('#route-title').textContent=item?.[2]||'TH Command';
+  document.querySelector('#sidebar').classList.remove('open');
+}
+window.addEventListener('hashchange',render);
+window.addEventListener('th:rerender',render);
+document.querySelector('#menu-button').onclick=()=>document.querySelector('#sidebar').classList.toggle('open');
+document.querySelector('#logout').onclick=()=>{localStorage.removeItem('th_command_session');location.replace('/login.html')};
+render();
