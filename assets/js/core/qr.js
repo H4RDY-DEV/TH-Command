@@ -1,23 +1,29 @@
 export function assetQrPayload(asset){
-  const payload = {
-    v: 1,
-    type: 'asset',
-    id: asset.id,
-    name: asset.name,
-    category: asset.category,
-    manufacturer: asset.manufacturer || '',
-    model: asset.model || '',
-    serial: asset.serial || '',
-    location: asset.location || '',
-    status: asset.status || '',
-    serviceDue: asset.serviceDue || ''
+  const url = new URL('/scan', location.origin);
+  url.searchParams.set('id', asset.id || '');
+  url.searchParams.set('name', asset.name || '');
+  url.searchParams.set('category', asset.category || '');
+  url.searchParams.set('serial', asset.serial || '');
+  url.searchParams.set('location', asset.location || '');
+  url.searchParams.set('status', asset.status || '');
+  url.searchParams.set('serviceDue', asset.serviceDue || '');
+  return url.toString();
+}
+
+export function assetFromUrl(url = new URL(location.href)){
+  const id = url.searchParams.get('id');
+  if(!id) return null;
+  return {
+    id,
+    name: url.searchParams.get('name') || 'Unnamed asset',
+    category: url.searchParams.get('category') || '',
+    manufacturer: url.searchParams.get('manufacturer') || '',
+    model: url.searchParams.get('model') || '',
+    serial: url.searchParams.get('serial') || '',
+    location: url.searchParams.get('location') || '',
+    status: url.searchParams.get('status') || '',
+    serviceDue: url.searchParams.get('serviceDue') || ''
   };
-  const json = JSON.stringify(payload);
-  const bytes = new TextEncoder().encode(json);
-  let binary = '';
-  bytes.forEach(byte => binary += String.fromCharCode(byte));
-  const encoded = btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  return `${location.origin}/scan.html#asset=${encoded}`;
 }
 
 export function decodeAssetPayload(encoded){

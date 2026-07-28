@@ -1,4 +1,4 @@
-import {decodeAssetPayload} from './core/qr.js';
+import {decodeAssetPayload,assetFromUrl} from './core/qr.js';
 
 const scanHome = document.querySelector('#scan-home');
 const resultPanel = document.querySelector('#asset-result');
@@ -34,6 +34,9 @@ function showAsset(asset){
 function parseQrText(text){
   try{
     const url = new URL(text);
+    const queryAsset = assetFromUrl(url);
+    if(queryAsset) return queryAsset;
+
     const hash = new URLSearchParams(url.hash.replace(/^#/,''));
     const encoded = hash.get('asset');
     if(encoded) return decodeAssetPayload(encoded);
@@ -86,9 +89,14 @@ document.querySelector('#scan-again').addEventListener('click', async ()=>{
   await startScanner();
 });
 
-const hashParams = new URLSearchParams(location.hash.replace(/^#/,''));
-const encoded = hashParams.get('asset');
-if(encoded){
-  const asset = decodeAssetPayload(encoded);
-  if(asset) showAsset(asset);
+const queryAsset = assetFromUrl(new URL(location.href));
+if(queryAsset){
+  showAsset(queryAsset);
+}else{
+  const hashParams = new URLSearchParams(location.hash.replace(/^#/,''));
+  const encoded = hashParams.get('asset');
+  if(encoded){
+    const asset = decodeAssetPayload(encoded);
+    if(asset) showAsset(asset);
+  }
 }
