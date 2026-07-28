@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050b14">
+  <title>Asset Scanner · TH Command</title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body class="scanner-body">
+  <main class="scanner-shell">
+    <header class="scanner-header">
+      <div class="brand-mark">TH</div>
+      <div>
+        <p class="eyebrow">TH Command Mobile</p>
+        <h1>Asset Scanner</h1>
+      </div>
+    </header>
+
+    <section id="scan-home">
+      <p class="muted">Scan a TH Command asset QR code using your phone camera.</p>
+      <div id="reader" class="scanner-reader"></div>
+      <div class="scanner-actions">
+        <button class="button primary" id="start-scan">Start camera</button>
+        <a class="button" href="/">Open TH Command</a>
+      </div>
+      <p id="scan-status" class="muted scanner-status">Camera is off.</p>
+    </section>
+
+    <section id="asset-result" class="panel hidden">
+      <div class="panel-head">
+        <h2>Asset record</h2>
+        <button class="button small" id="scan-again">Scan another</button>
+      </div>
+      <div class="panel-body" id="asset-result-body"></div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script type="module" src="/assets/js/scan.js"></script>
+</body>
+</html>

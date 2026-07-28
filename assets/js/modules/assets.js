@@ -1,5 +1,6 @@
 import {getAssets,saveAssets,nextAssetId} from '../core/store.js';
 import {money,date,badge,toast,escapeHtml} from '../core/ui.js';
+import {assetQrPayload} from '../core/qr.js';
 
 let searchText='';
 let categoryFilter='All';
@@ -55,7 +56,7 @@ export function renderAssets(){
           <td>${assetStatusBadge(asset.status)}</td>
           <td>${money(asset.dailyRate)}</td>
           <td>${date(asset.serviceDue)}</td>
-          <td><button class="button small edit-asset" data-id="${asset.id}">Edit</button></td>
+          <td><div class="actions"><button class="button small qr-asset" data-id="${asset.id}">QR</button><button class="button small edit-asset" data-id="${asset.id}">Edit</button></div></td>
         </tr>`).join('')}</tbody>
       </table></div>` : `<div class="empty-state"><h3>No assets found</h3><p>Adjust your filters or create a new asset.</p></div>`}
     </section>`;
@@ -75,6 +76,7 @@ function assetStatusBadge(status){
 function bindAssetEvents(){
   document.querySelector('#new-asset')?.addEventListener('click',()=>openAssetModal());
   document.querySelectorAll('.edit-asset').forEach(btn=>btn.addEventListener('click',()=>openAssetModal(btn.dataset.id)));
+  document.querySelectorAll('.qr-asset').forEach(btn=>btn.addEventListener('click',()=>openQrModal(btn.dataset.id)));
   document.querySelector('#asset-search')?.addEventListener('input',e=>{searchText=e.target.value; window.dispatchEvent(new Event('th:rerender'));});
   document.querySelector('#asset-category-filter')?.addEventListener('change',e=>{categoryFilter=e.target.value; window.dispatchEvent(new Event('th:rerender'));});
   document.querySelector('#asset-status-filter')?.addEventListener('change',e=>{statusFilter=e.target.value; window.dispatchEvent(new Event('th:rerender'));});
@@ -142,5 +144,61 @@ function openAssetModal(id=null){
       toast('Asset deleted');
       window.dispatchEvent(new Event('th:rerender'));
     }
+  });
+}
+
+
+function openQrModal(id){
+  const asset=getAssets().find(item=>item.id===id);
+  if(!asset) return;
+  const payload=assetQrPayload(asset);
+  const wrap=document.createElement('div');
+  wrap.className='modal-backdrop';
+  wrap.innerHTML=`<div class="modal qr-modal">
+    <div class="modal-head">
+      <div><p class="eyebrow">Asset QR code</p><h2 style="margin:0">${escapeHtml(asset.name)}</h2></div>
+      <button type="button" class="button small" data-close>Close</button>
+    </div>
+    <div class="modal-body qr-layout">
+      <div id="asset-qr-code" class="qr-code"></div>
+      <div>
+        <p><strong>${asset.id}</strong></p>
+        <p class="muted">${escapeHtml(asset.serial||'No serial/reference')}</p>
+        <p>Scan this code from <strong>command.th-technical.co.uk/scan</strong> or with a phone camera.</p>
+        <div class="actions">
+          <button class="button primary" id="print-qr">Print label</button>
+          <button class="button" id="copy-qr-link">Copy QR link</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(wrap);
+  wrap.querySelectorAll('[data-close]').forEach(btn=>btn.onclick=()=>wrap.remove());
+  wrap.addEventListener('click',event=>{if(event.target===wrap)wrap.remove()});
+
+  const qrTarget=wrap.querySelector('#asset-qr-code');
+  if(window.QRCode){
+    new QRCode(qrTarget,{text:payload,width:240,height:240,correctLevel:QRCode.CorrectLevel.M});
+  }else{
+    qrTarget.innerHTML='<p class="form-error">QR generator failed to load.</p>';
+  }
+
+  wrap.querySelector('#copy-qr-link').addEventListener('click',async()=>{
+    try{
+      await navigator.clipboard.writeText(payload);
+      toast('QR link copied');
+    }catch{
+      toast('Unable to copy link');
+    }
+  });
+
+  wrap.querySelector('#print-qr').addEventListener('click',()=>{
+    const image=qrTarget.querySelector('img')?.src || qrTarget.querySelector('canvas')?.toDataURL();
+    if(!image) return;
+    const printWindow=window.open('','_blank','width=520,height=700');
+    printWindow.document.write(`<!doctype html><html><head><title>${asset.id} QR Label</title>
+      <style>body{font-family:Arial,sans-serif;text-align:center;padding:30px}img{width:280px;height:280px}.label{border:2px solid #000;border-radius:14px;padding:24px;display:inline-block}h1{font-size:26px;margin:14px 0 6px}p{margin:5px 0}</style>
+      </head><body><div class="label"><img src="${image}"><h1>${escapeHtml(asset.id)}</h1><p><strong>${escapeHtml(asset.name)}</strong></p><p>${escapeHtml(asset.serial||'')}</p><p>TH Technical · TH Command</p></div><script>window.onload=()=>window.print()<\/script></body></html>`);
+    printWindow.document.close();
   });
 }
