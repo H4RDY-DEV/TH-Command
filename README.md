@@ -1,19 +1,27 @@
-# TH Command v8.1
+# TH Command v8.2
 
 Standalone static application prepared for `command.th-technical.co.uk`.
 
 ## Included modules
 
-- Dashboard
-- Jobs module with local CRUD storage
-- Navigation placeholders for Assets, Warehouse, CRM, Crew, Finance and Settings
+- Dashboard with live local metrics
+- Jobs module with create, edit, delete, search and status filters
+- Assets module with:
+  - Equipment records
+  - Categories and manufacturers
+  - Quantities and availability
+  - Storage locations
+  - Daily hire rates
+  - Service dates
+  - Create, edit, delete, search and filters
+- Navigation placeholders for Warehouse, CRM, Crew, Finance and Settings
 
-## Deploy
+## Deployment
 
-Upload the contents of this ZIP to the root of the dedicated `TH-Command` Git repository, then connect that repository to its own Vercel project.
+Replace the contents of the dedicated `TH-Command` repository with the contents of this ZIP, commit, and redeploy through Vercel.
 
-No `/command` folder and no `vercel.json` are required.
+Existing locally-created jobs remain in the same browser because this release keeps the same localStorage keys.
 
-## Demo login
+## Temporary authentication
 
-Use any valid email address and any password. This is temporary local authentication and must be replaced with Supabase authentication before production use.
+Any valid email and any password will sign in. Replace this with Supabase authentication before production use.

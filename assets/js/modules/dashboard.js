@@ -1,8 +1,9 @@
-import {getJobs} from '../core/store.js';
+import {getJobs,getAssets} from '../core/store.js';
 import {money,date,badge} from '../core/ui.js';
 
 export function renderDashboard(){
   const jobs=getJobs();
+  const assets=getAssets();
   const confirmed=jobs.filter(j=>j.status==='Confirmed');
   const pipeline=jobs.filter(j=>!['Completed','Cancelled'].includes(j.status)).reduce((s,j)=>s+Number(j.value||0),0);
   const upcoming=[...jobs].filter(j=>new Date(j.start)>=new Date(new Date().toDateString())).sort((a,b)=>a.start.localeCompare(b.start)).slice(0,5);
@@ -16,7 +17,7 @@ export function renderDashboard(){
       <article class="metric"><div class="metric-label">Active jobs</div><div class="metric-value">${jobs.filter(j=>!['Completed','Cancelled'].includes(j.status)).length}</div><div class="metric-note">Across all live stages</div></article>
       <article class="metric"><div class="metric-label">Confirmed</div><div class="metric-value">${confirmed.length}</div><div class="metric-note">Ready for production</div></article>
       <article class="metric"><div class="metric-label">Pipeline value</div><div class="metric-value">${money(pipeline)}</div><div class="metric-note">Enquiries, quotes and confirmed</div></article>
-      <article class="metric"><div class="metric-label">Assets available</div><div class="metric-value">128</div><div class="metric-note">Demo inventory figure</div></article>
+      <article class="metric"><div class="metric-label">Assets available</div><div class="metric-value">${assets.reduce((sum,a)=>sum+Number(a.available||0),0)}</div><div class="metric-note">${assets.length} asset records</div></article>
     </section>
     <section class="grid-2">
       <article class="panel">

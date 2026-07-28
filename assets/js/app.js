@@ -1,5 +1,6 @@
 import {renderDashboard} from './modules/dashboard.js';
 import {renderJobs} from './modules/jobs.js';
+import {renderAssets} from './modules/assets.js';
 import {renderPlaceholder} from './modules/placeholders.js';
 
 if(!localStorage.getItem('th_command_session')) location.replace('/login.html');
@@ -7,7 +8,7 @@ if(!localStorage.getItem('th_command_session')) location.replace('/login.html');
 const routes={
   dashboard:renderDashboard,
   jobs:renderJobs,
-  assets:()=>renderPlaceholder('Assets','Equipment records, serial numbers, service history and availability.'),
+  assets:renderAssets,
   warehouse:()=>renderPlaceholder('Warehouse','Prep lists, scanning, dispatch and returns.'),
   clients:()=>renderPlaceholder('CRM','Clients, contacts, venues and communication history.'),
   crew:()=>renderPlaceholder('Crew','Staff, freelancers, skills, availability and assignments.'),
