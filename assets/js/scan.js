@@ -1,4 +1,4 @@
-import {assetFromQrPayload,assetFromCompactPayload,decodeAssetPayload,assetFromUrl} from './core/qr.js';
+import {assetFromQrPayload,assetFromCompactPayload,decodeAssetPayload,assetFromUrl,normaliseAsset} from './core/qr.js';
 
 const scanHome = document.querySelector('#scan-home');
 const resultPanel = document.querySelector('#asset-result');
@@ -12,7 +12,8 @@ function escapeHtml(value=''){
   return String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
 }
 
-function showAsset(asset){
+function showAsset(rawAsset){
+  const asset=normaliseAsset(rawAsset);
   scanHome.classList.add('hidden');
   resultPanel.classList.remove('hidden');
   resultBody.innerHTML = `
@@ -32,7 +33,9 @@ function showAsset(asset){
         <div><dt>Service due</dt><dd>${escapeHtml(asset.serviceDue || '—')}</dd></div>
         <div><dt>Notes</dt><dd>${escapeHtml(asset.notes || '—')}</dd></div>
       </dl>
-      <p class="scanner-note">Asset QR record loaded successfully.</p>
+      ${(!asset.category && !asset.manufacturer && !asset.model)
+        ? '<p class="scanner-note warning-note">This is an older QR label containing only basic asset information. Generate a new QR Label from the desktop Assets page.</p>'
+        : '<p class="scanner-note">Complete asset QR record loaded successfully.</p>'}
     </div>`;
 }
 

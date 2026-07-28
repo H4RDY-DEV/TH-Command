@@ -1,6 +1,6 @@
 import {getAssets,saveAssets,nextAssetId} from '../core/store.js';
 import {money,date,badge,toast,escapeHtml} from '../core/ui.js';
-import {assetQrPayload} from '../core/qr.js';
+import {assetQrPayload,normaliseAsset} from '../core/qr.js';
 
 let searchText='';
 let categoryFilter='All';
@@ -9,7 +9,7 @@ let statusFilter='All';
 const statuses=['Available','Part Allocated','Allocated','Service Due','Out of Service'];
 
 export function renderAssets(){
-  const assets=getAssets();
+  const assets=getAssets().map(normaliseAsset);
   const categories=['All',...new Set(assets.map(a=>a.category).filter(Boolean))];
   const filtered=assets.filter(asset=>{
     const haystack=`${asset.id} ${asset.name} ${asset.manufacturer} ${asset.model} ${asset.serial} ${asset.location}`.toLowerCase();
@@ -46,10 +46,12 @@ export function renderAssets(){
 
     <section class="panel">
       ${filtered.length ? `<div class="table-wrap"><table>
-        <thead><tr><th>Asset</th><th>Category</th><th>Quantity</th><th>Available</th><th>Location</th><th>Status</th><th>Daily rate</th><th>Service due</th><th></th></tr></thead>
+        <thead><tr><th>Asset</th><th>Category</th><th>Manufacturer</th><th>Model</th><th>Quantity</th><th>Available</th><th>Location</th><th>Status</th><th>Daily rate</th><th>Service due</th><th></th></tr></thead>
         <tbody>${filtered.map(asset=>`<tr>
           <td><strong>${escapeHtml(asset.name)}</strong><br><small class="muted">${asset.id} · ${escapeHtml(asset.serial||'No serial')}</small></td>
-          <td>${escapeHtml(asset.category)}</td>
+          <td>${escapeHtml(asset.category||'—')}</td>
+          <td>${escapeHtml(asset.manufacturer||'—')}</td>
+          <td>${escapeHtml(asset.model||'—')}</td>
           <td>${Number(asset.quantity||0)}</td>
           <td>${Number(asset.available||0)}</td>
           <td>${escapeHtml(asset.location||'—')}</td>
@@ -84,7 +86,7 @@ function bindAssetEvents(){
 }
 
 function openAssetModal(id=null){
-  const assets=getAssets();
+  const assets=getAssets().map(normaliseAsset);
   const existing=assets.find(a=>a.id===id);
   const asset=existing||{
     id:nextAssetId(assets),name:'',category:'Lighting',manufacturer:'',model:'',serial:'',
@@ -163,8 +165,15 @@ function openQrModal(id){
     <div class="modal-body qr-layout">
       <div id="asset-qr-code" class="qr-code"></div>
       <div>
-        <p><strong>${asset.id}</strong></p>
-        <p class="muted">${escapeHtml(asset.serial||'No serial/reference')}</p>
+        <p><strong>${escapeHtml(asset.id)}</strong></p>
+        <div class="qr-asset-summary">
+          <div><span>Category</span><strong>${escapeHtml(asset.category||'—')}</strong></div>
+          <div><span>Manufacturer</span><strong>${escapeHtml(asset.manufacturer||'—')}</strong></div>
+          <div><span>Model</span><strong>${escapeHtml(asset.model||'—')}</strong></div>
+          <div><span>Serial</span><strong>${escapeHtml(asset.serial||'—')}</strong></div>
+          <div><span>Location</span><strong>${escapeHtml(asset.location||'—')}</strong></div>
+          <div><span>Status</span><strong>${escapeHtml(asset.status||'—')}</strong></div>
+        </div>
         <p>Open <strong>command.th-technical.co.uk/scan.html</strong> on the phone, then scan this code using the TH Command scanner.</p>
         <div class="actions">
           <button class="button primary" id="print-qr">Print label</button>
@@ -179,7 +188,7 @@ function openQrModal(id){
 
   const qrTarget=wrap.querySelector('#asset-qr-code');
   if(window.QRCode){
-    new QRCode(qrTarget,{text:payload,width:240,height:240,correctLevel:QRCode.CorrectLevel.M});
+    new QRCode(qrTarget,{text:payload,width:320,height:320,correctLevel:QRCode.CorrectLevel.L});
   }else{
     qrTarget.innerHTML='<p class="form-error">QR generator failed to load.</p>';
   }
