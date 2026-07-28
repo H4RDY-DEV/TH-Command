@@ -1,0 +1,1 @@
+export const validate=r=>Object.values(r).every(v=>v!==''&&v!=null);

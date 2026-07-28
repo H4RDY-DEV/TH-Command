@@ -1,0 +1,5 @@
+.asset-table{width:100%;border-collapse:collapse}
+.asset-table th,.asset-table td{padding:10px;border-bottom:1px solid #2f3d5d}
+.toolbar{display:flex;gap:10px;margin:20px 0}
+.toolbar input{flex:1;padding:10px}
+.toolbar button{padding:10px 18px}

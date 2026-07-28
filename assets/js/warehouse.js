@@ -1,0 +1,1 @@
+export function initWarehouse(){console.log('warehouse');}

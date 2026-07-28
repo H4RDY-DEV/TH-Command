@@ -1,0 +1,1 @@
+export function initAssets(){console.log('assets');}

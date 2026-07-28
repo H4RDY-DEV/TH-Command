@@ -1,0 +1,1 @@
+export function renderTable(el,data){el.innerHTML=data.map(r=>`<tr><td>${Object.values(r).join('</td><td>')}</td></tr>`).join('');}

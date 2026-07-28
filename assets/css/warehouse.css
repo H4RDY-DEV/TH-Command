@@ -1,0 +1,3 @@
+.toolbar{display:flex;gap:12px;margin:20px 0}
+.warehouse{width:100%;border-collapse:collapse}
+.warehouse th,.warehouse td{padding:10px;border-bottom:1px solid #30415e}

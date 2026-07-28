@@ -1,0 +1,1 @@
+export function loadCalendar(){console.log('calendar');}

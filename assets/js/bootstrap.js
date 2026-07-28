@@ -1,0 +1,1 @@
+import {isAuthenticated} from '../services/auth.js'; if(!isAuthenticated()) location='login.html';

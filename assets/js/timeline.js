@@ -1,0 +1,1 @@
+export const statuses=['Quote','Confirmed','Prep','Out','On Site','Returned','Complete'];

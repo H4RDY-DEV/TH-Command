@@ -1,0 +1,4 @@
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.layout ul{list-style:none;padding:0}
+.layout li{padding:10px;border-bottom:1px solid #33435f;display:flex;justify-content:space-between}
+.layout button{padding:6px 12px}

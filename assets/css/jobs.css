@@ -1,0 +1,5 @@
+.toolbar{display:flex;gap:10px;margin:20px 0}
+.jobs{width:100%;border-collapse:collapse}
+.jobs th,.jobs td{border-bottom:1px solid #2b3d63;padding:10px;text-align:left}
+.job-form{display:grid;gap:12px;max-width:700px}
+.job-form input,.job-form textarea,.job-form select{padding:10px}

@@ -1,0 +1,14 @@
+body{margin:0;font-family:Arial,sans-serif;background:#0b1220;color:#fff;display:flex}
+.sidebar{width:240px;background:#111b2f;padding:20px;height:100vh}
+main{flex:1;padding:24px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.tile,.card{background:#18243d;border-radius:14px;padding:20px}
+.card{max-width:360px;margin:10vh auto;display:flex;flex-direction:column;gap:12px}
+input,button{padding:12px;border-radius:8px;border:0}button{background:#2b7cff;color:#fff;cursor:pointer}
+
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.kpi{background:#223252;border-radius:14px;padding:18px}
+nav a{display:block;color:#fff;text-decoration:none;padding:10px 0}
+nav a:hover{opacity:.8}
+
+.topbar{background:#16233d;padding:14px;border-radius:12px;margin-bottom:20px;display:flex;justify-content:space-between}.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}.table{width:100%;border-collapse:collapse}.table td,.table th{padding:10px;border-bottom:1px solid #2d4066}

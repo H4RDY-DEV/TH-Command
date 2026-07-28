@@ -1,0 +1,1 @@
+export function goto(page){location.hash=page;}

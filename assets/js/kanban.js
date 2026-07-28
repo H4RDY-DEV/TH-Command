@@ -1,0 +1,1 @@
+export function loadKanban(){console.log('kanban');}

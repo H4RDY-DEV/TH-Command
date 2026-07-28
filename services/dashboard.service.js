@@ -1,0 +1,1 @@
+export async function getStats(){return {jobs:0,revenue:0};}

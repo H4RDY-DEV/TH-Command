@@ -1,0 +1,1 @@
+create view active_jobs as select * from jobs;

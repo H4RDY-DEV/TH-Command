@@ -1,0 +1,6 @@
+
+.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center}
+.hidden{display:none}
+.modal-card{background:#182744;color:#fff;border-radius:12px;padding:20px;min-width:420px}
+.modal-header{display:flex;justify-content:space-between;align-items:center}
+.toast{position:fixed;right:20px;bottom:20px;background:#1d8f5a;color:#fff;padding:12px 16px;border-radius:8px}
