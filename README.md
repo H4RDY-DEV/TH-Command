@@ -1,26 +1,25 @@
-# TH Command v8.3.3 — Mobile Scanner Fix
+# TH Command v8.3.4 — Asset Data Fix
 
-This release changes newly generated asset QR codes to a compact plain-text TH Command format:
+This patch fixes QR scans that recognised an asset but displayed empty information.
 
-`THCMD|ASSET|1|...`
+## Changes
 
-This is more reliable inside the TH Command mobile scanner than long URLs with encoded query parameters.
+- New QR payload format: `THCMD-ASSET-V1:`
+- Stores a compact Base64URL JSON snapshot of the complete asset record
+- Includes:
+  - Asset ID and name
+  - Category
+  - Manufacturer and model
+  - Serial/reference
+  - Location
+  - Status
+  - Quantity and available quantity
+  - Daily rate
+  - Service due date
+  - Notes
+- Keeps support for older pipe-delimited, URL and encoded QR formats
+- Mobile scan result now displays the complete asset snapshot
 
-## Important
+## Required
 
-After deploying this version, generate a new QR code for the asset. Old printed labels can still be read where possible, but the new compact QR format is the recommended format.
-
-## Scanner address
-
-Open:
-
-`https://command.th-technical.co.uk/scan.html`
-
-Press **Start camera**, then scan the newly generated asset QR code.
-
-## Also fixed
-
-- Reads the decoded value from multiple html5-qrcode callback fields.
-- Supports rear-camera fallback behaviour on mobile browsers.
-- Displays the exact decoded value when recognition fails.
-- Retains support for older URL and encoded QR formats.
+After deployment, open each asset and generate a new QR code. Previously generated labels do not contain all of the new fields.

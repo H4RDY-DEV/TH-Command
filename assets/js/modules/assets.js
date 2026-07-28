@@ -167,7 +167,7 @@ function openQrModal(id){
         <p>Open <strong>command.th-technical.co.uk/scan.html</strong> on the phone, then scan this code using the TH Command scanner.</p>
         <div class="actions">
           <button class="button primary" id="print-qr">Print label</button>
-          <button class="button" id="copy-qr-link">Copy QR data</button>
+          <button class="button" id="copy-qr-link">Copy asset QR data</button>
         </div>
       </div>
     </div>

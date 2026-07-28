@@ -1,4 +1,4 @@
-import {assetFromCompactPayload,decodeAssetPayload,assetFromUrl} from './core/qr.js';
+import {assetFromQrPayload,assetFromCompactPayload,decodeAssetPayload,assetFromUrl} from './core/qr.js';
 
 const scanHome = document.querySelector('#scan-home');
 const resultPanel = document.querySelector('#asset-result');
@@ -26,7 +26,11 @@ function showAsset(asset){
         <div><dt>Serial / reference</dt><dd>${escapeHtml(asset.serial || '—')}</dd></div>
         <div><dt>Location</dt><dd>${escapeHtml(asset.location || '—')}</dd></div>
         <div><dt>Status</dt><dd>${escapeHtml(asset.status || '—')}</dd></div>
+        <div><dt>Quantity</dt><dd>${Number(asset.quantity || 0)}</dd></div>
+        <div><dt>Available</dt><dd>${Number(asset.available || 0)}</dd></div>
+        <div><dt>Daily rate</dt><dd>£${Number(asset.dailyRate || 0).toFixed(2)}</dd></div>
         <div><dt>Service due</dt><dd>${escapeHtml(asset.serviceDue || '—')}</dd></div>
+        <div><dt>Notes</dt><dd>${escapeHtml(asset.notes || '—')}</dd></div>
       </dl>
       <p class="scanner-note">Asset QR record loaded successfully.</p>
     </div>`;
@@ -48,7 +52,11 @@ function parseQrText(rawText){
   const text = normalise(rawText);
   if(!text) return null;
 
-  // v8.3.3 compact format.
+  // v8.3.4 compact JSON format.
+  const currentAsset = assetFromQrPayload(text);
+  if(currentAsset) return currentAsset;
+
+  // v8.3.3 pipe-delimited format.
   const compactAsset = assetFromCompactPayload(text);
   if(compactAsset) return compactAsset;
 
