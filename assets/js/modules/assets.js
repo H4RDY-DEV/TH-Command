@@ -164,10 +164,10 @@ function openQrModal(id){
       <div>
         <p><strong>${asset.id}</strong></p>
         <p class="muted">${escapeHtml(asset.serial||'No serial/reference')}</p>
-        <p>Scan this code from <strong>command.th-technical.co.uk/scan</strong> or with a phone camera.</p>
+        <p>Open <strong>command.th-technical.co.uk/scan.html</strong> on the phone, then scan this code using the TH Command scanner.</p>
         <div class="actions">
           <button class="button primary" id="print-qr">Print label</button>
-          <button class="button" id="copy-qr-link">Copy QR link</button>
+          <button class="button" id="copy-qr-link">Copy QR data</button>
         </div>
       </div>
     </div>
@@ -186,7 +186,7 @@ function openQrModal(id){
   wrap.querySelector('#copy-qr-link').addEventListener('click',async()=>{
     try{
       await navigator.clipboard.writeText(payload);
-      toast('QR link copied');
+      toast('QR data copied');
     }catch{
       toast('Unable to copy link');
     }

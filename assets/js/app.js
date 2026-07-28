@@ -29,7 +29,7 @@ document.querySelector('#app').innerHTML=`
     <div class="sidebar-bottom"><div class="user-tile"><div class="avatar">TH</div><div><strong>Tyler</strong><small class="muted" style="display:block">Administrator</small></div></div><button class="button" id="logout" style="width:100%;margin-top:8px">Sign out</button></div>
   </aside>
   <section class="main-shell">
-    <header class="topbar"><button class="button small mobile-menu" id="menu-button">Menu</button><div class="topbar-title" id="route-title">Dashboard</div><div class="topbar-spacer"></div><input class="search-box" placeholder="Search TH Command…"><a class="button small" href="/scan">Scan QR</a><span class="badge confirmed">Online</span></header>
+    <header class="topbar"><button class="button small mobile-menu" id="menu-button">Menu</button><div class="topbar-title" id="route-title">Dashboard</div><div class="topbar-spacer"></div><input class="search-box" placeholder="Search TH Command…"><a class="button small" href="/scan.html">Scan QR</a><span class="badge confirmed">Online</span></header>
     <main class="content" id="view"></main>
   </section>
 </div>`;
