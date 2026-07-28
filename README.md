@@ -1,25 +1,27 @@
-# TH Command v8.3.4 — Asset Data Fix
+# TH Command v8.3.5 — Asset Actions
 
-This patch fixes QR scans that recognised an asset but displayed empty information.
+This release adds three clear actions to every asset row:
 
-## Changes
+- Edit
+- QR Label
+- Remove
 
-- New QR payload format: `THCMD-ASSET-V1:`
-- Stores a compact Base64URL JSON snapshot of the complete asset record
-- Includes:
-  - Asset ID and name
-  - Category
-  - Manufacturer and model
-  - Serial/reference
-  - Location
-  - Status
-  - Quantity and available quantity
-  - Daily rate
-  - Service due date
-  - Notes
-- Keeps support for older pipe-delimited, URL and encoded QR formats
-- Mobile scan result now displays the complete asset snapshot
+## Remove workflow
 
-## Required
+Selecting **Remove** now offers two options:
 
-After deployment, open each asset and generate a new QR code. Previously generated labels do not contain all of the new fields.
+### Archive asset
+- Keeps the asset record
+- Changes its status to `Archived`
+- Stores an archive timestamp
+- Allows the record to remain available for future restoration/history work
+
+### Delete permanently
+- Requires typing `DELETE`
+- Removes the asset from localStorage
+- Updates the asset list and dashboard totals immediately
+- Cannot be undone
+
+## Existing QR functionality
+
+The complete v8.3.4 asset-data QR format remains included.

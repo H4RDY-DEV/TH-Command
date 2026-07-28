@@ -56,7 +56,7 @@ export function renderAssets(){
           <td>${assetStatusBadge(asset.status)}</td>
           <td>${money(asset.dailyRate)}</td>
           <td>${date(asset.serviceDue)}</td>
-          <td><div class="actions"><button class="button small qr-asset" data-id="${asset.id}">QR</button><button class="button small edit-asset" data-id="${asset.id}">Edit</button></div></td>
+          <td><div class="actions asset-actions"><button class="button small edit-asset" data-id="${asset.id}">Edit</button><button class="button small qr-asset" data-id="${asset.id}">QR Label</button><button class="button small danger remove-asset" data-id="${asset.id}">Remove</button></div></td>
         </tr>`).join('')}</tbody>
       </table></div>` : `<div class="empty-state"><h3>No assets found</h3><p>Adjust your filters or create a new asset.</p></div>`}
     </section>`;
@@ -77,6 +77,7 @@ function bindAssetEvents(){
   document.querySelector('#new-asset')?.addEventListener('click',()=>openAssetModal());
   document.querySelectorAll('.edit-asset').forEach(btn=>btn.addEventListener('click',()=>openAssetModal(btn.dataset.id)));
   document.querySelectorAll('.qr-asset').forEach(btn=>btn.addEventListener('click',()=>openQrModal(btn.dataset.id)));
+  document.querySelectorAll('.remove-asset').forEach(btn=>btn.addEventListener('click',()=>openRemoveAssetModal(btn.dataset.id)));
   document.querySelector('#asset-search')?.addEventListener('input',e=>{searchText=e.target.value; window.dispatchEvent(new Event('th:rerender'));});
   document.querySelector('#asset-category-filter')?.addEventListener('change',e=>{categoryFilter=e.target.value; window.dispatchEvent(new Event('th:rerender'));});
   document.querySelector('#asset-status-filter')?.addEventListener('change',e=>{statusFilter=e.target.value; window.dispatchEvent(new Event('th:rerender'));});
@@ -201,4 +202,108 @@ function openQrModal(id){
       </head><body><div class="label"><img src="${image}"><h1>${escapeHtml(asset.id)}</h1><p><strong>${escapeHtml(asset.name)}</strong></p><p>${escapeHtml(asset.serial||'')}</p><p>TH Technical · TH Command</p></div><script>window.onload=()=>window.print()<\/script></body></html>`);
     printWindow.document.close();
   });
+}
+
+
+function openRemoveAssetModal(id){
+  const asset=getAssets().find(item=>item.id===id);
+  if(!asset) return;
+
+  const wrap=document.createElement('div');
+  wrap.className='modal-backdrop';
+  wrap.innerHTML=`<div class="modal remove-modal">
+    <div class="modal-head">
+      <div>
+        <p class="eyebrow">Asset actions</p>
+        <h2 style="margin:0">Remove asset?</h2>
+      </div>
+      <button type="button" class="button small" data-close>Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="remove-summary">
+        <strong>${escapeHtml(asset.name || 'Unnamed asset')}</strong>
+        <span>${escapeHtml(asset.id || '')}${asset.serial ? ` · ${escapeHtml(asset.serial)}` : ''}</span>
+      </div>
+
+      <p class="muted">Choose whether to archive the asset or permanently delete it.</p>
+
+      <div class="remove-options">
+        <button type="button" class="remove-option" id="archive-asset">
+          <strong>Archive asset</strong>
+          <span>Hides it from active inventory while keeping the record available for restoration and history.</span>
+        </button>
+
+        <button type="button" class="remove-option danger-option" id="delete-asset">
+          <strong>Delete permanently</strong>
+          <span>Removes the asset record from this browser. This cannot be undone.</span>
+        </button>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="button" data-close>Cancel</button>
+      </div>
+    </div>
+  </div>`;
+
+  document.body.appendChild(wrap);
+  wrap.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>wrap.remove()));
+  wrap.addEventListener('click',event=>{if(event.target===wrap)wrap.remove()});
+
+  wrap.querySelector('#archive-asset').addEventListener('click',()=>{
+    const assets=getAssets().map(item=>item.id===id ? {...item,status:'Archived',archived:true,archivedAt:new Date().toISOString()} : item);
+    saveAssets(assets);
+    wrap.remove();
+    toast(`${asset.name} archived`);
+    renderAssets();
+  });
+
+  wrap.querySelector('#delete-asset').addEventListener('click',()=>{
+    openPermanentDeleteConfirm(asset, wrap);
+  });
+}
+
+function openPermanentDeleteConfirm(asset, parentModal){
+  const confirmWrap=document.createElement('div');
+  confirmWrap.className='modal-backdrop modal-backdrop-nested';
+  confirmWrap.innerHTML=`<div class="modal confirm-delete-modal">
+    <div class="modal-head">
+      <div>
+        <p class="eyebrow danger-text">Permanent deletion</p>
+        <h2 style="margin:0">Delete ${escapeHtml(asset.name || 'this asset')}?</h2>
+      </div>
+    </div>
+    <div class="modal-body">
+      <p>This will permanently remove <strong>${escapeHtml(asset.id || '')}</strong> from TH Command on this device.</p>
+      <p class="danger-warning">This action cannot be undone.</p>
+      <label class="field">
+        <span>Type <strong>DELETE</strong> to confirm</span>
+        <input id="delete-confirm-text" autocomplete="off" placeholder="DELETE">
+      </label>
+      <div class="modal-footer">
+        <button type="button" class="button" id="cancel-delete">Cancel</button>
+        <button type="button" class="button danger" id="confirm-delete" disabled>Delete Asset</button>
+      </div>
+    </div>
+  </div>`;
+
+  document.body.appendChild(confirmWrap);
+  const input=confirmWrap.querySelector('#delete-confirm-text');
+  const confirmButton=confirmWrap.querySelector('#confirm-delete');
+
+  input.addEventListener('input',()=>{
+    confirmButton.disabled=input.value.trim().toUpperCase()!=='DELETE';
+  });
+
+  confirmWrap.querySelector('#cancel-delete').addEventListener('click',()=>confirmWrap.remove());
+
+  confirmButton.addEventListener('click',()=>{
+    const remaining=getAssets().filter(item=>item.id!==asset.id);
+    saveAssets(remaining);
+    confirmWrap.remove();
+    parentModal.remove();
+    toast(`${asset.name} deleted`);
+    renderAssets();
+  });
+
+  setTimeout(()=>input.focus(),50);
 }
