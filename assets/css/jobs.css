@@ -1,1 +1,1 @@
-.jobs-v9{padding:24px}.jobs-v9 header{display:flex;justify-content:space-between;align-items:center}.job-card{background:#111827;border:1px solid #2b3445;border-radius:12px;padding:16px;margin:12px 0}.status{padding:4px 8px;border-radius:999px}.status.Loading{background:#a16207}.status.Complete{background:#166534}dialog{border:none;border-radius:12px;padding:20px;max-width:500px;width:90%}
+.job-status{padding:4px 10px;border-radius:20px;font-weight:600}.status-confirmed{background:#0d6efd22;color:#0d6efd}.status-onsite{background:#19875422;color:#198754}

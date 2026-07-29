@@ -1,1 +1,3 @@
-v9.0.4 Jobs UI patch: updates jobs view, css and module.
+TH Command v9.0.5
+- Added search/filter hooks
+- Added status badge styles
