@@ -1,5 +1,1 @@
-.toolbar{display:flex;gap:10px;margin:20px 0}
-.jobs{width:100%;border-collapse:collapse}
-.jobs th,.jobs td{border-bottom:1px solid #2b3d63;padding:10px;text-align:left}
-.job-form{display:grid;gap:12px;max-width:700px}
-.job-form input,.job-form textarea,.job-form select{padding:10px}
+.jobs-v9{padding:24px}.jobs-v9 header{display:flex;justify-content:space-between;align-items:center}.job-card{background:#111827;border:1px solid #2b3445;border-radius:12px;padding:16px;margin:12px 0}.status{padding:4px 8px;border-radius:999px}.status.Loading{background:#a16207}.status.Complete{background:#166534}dialog{border:none;border-radius:12px;padding:20px;max-width:500px;width:90%}
