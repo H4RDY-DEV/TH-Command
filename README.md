@@ -1,11 +1,15 @@
-# TH Command v8.3.7 — Visible Asset Actions
+# TH Command v8.3.8 — Responsive Scaling Fix
 
-This patch keeps all asset details from v8.3.6 and makes the three asset actions permanently visible.
+This release fixes overlapping text, asset controls and QR codes on smaller screens.
 
 ## Fixed
 
-- Edit, QR Label and Remove now appear directly underneath the asset name.
-- The action buttons are no longer hidden at the far-right side of the wide asset table.
-- On mobile, the Asset & actions column stays visible while the remaining details can scroll horizontally.
-- The Remove asset button inside the edit window now opens the same safe Archive / Permanent Delete workflow.
-- Category, Manufacturer, Model and the complete QR data remain included.
+- QR modal changes to a single-column layout on phones.
+- QR images scale within the available screen width.
+- Long asset names, serial numbers and notes wrap safely.
+- Asset action buttons wrap without covering table content.
+- Removed the sticky mobile asset column that could overlap other columns.
+- Tables retain horizontal scrolling without covering content.
+- Mobile top navigation wraps safely.
+- Forms, modals and scanner video fit within the viewport.
+- Category, Manufacturer, Model, QR data and Remove actions remain included.
