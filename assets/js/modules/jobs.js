@@ -193,14 +193,14 @@ function closeModal() {
 }
 
 
-// v9.1.5 helpers
-export function sortJobsByDate(jobs=[]){
- return [...jobs].sort((a,b)=>new Date(a.startDate||0)-new Date(b.startDate||0));
-}
-export function jobSummary(jobs=[]){
- return {
-   total: jobs.length,
-   complete: jobs.filter(j=>j.status==='Complete').length,
-   active: jobs.filter(j=>!['Complete','Cancelled'].includes(j.status)).length
- };
+export function duplicateJob(jobId) {
+  const jobs = getJobs();
+  const original = jobs.find(j=>j.id===jobId);
+  if(!original) return null;
+  const copy = {...original,id: nextJobId(), title: original.title + ' (Copy)'};
+  jobs.push(copy);
+  saveJobs(jobs);
+  HistoryService.log('job.duplicated',{source:original.id,newId:copy.id});
+  window.dispatchEvent(new Event('th:rerender'));
+  return copy;
 }
