@@ -191,3 +191,16 @@ function deleteJob(jobId) {
 function closeModal() {
   document.querySelector('#job-modal')?.remove();
 }
+
+
+// v9.1.5 helpers
+export function sortJobsByDate(jobs=[]){
+ return [...jobs].sort((a,b)=>new Date(a.startDate||0)-new Date(b.startDate||0));
+}
+export function jobSummary(jobs=[]){
+ return {
+   total: jobs.length,
+   complete: jobs.filter(j=>j.status==='Complete').length,
+   active: jobs.filter(j=>!['Complete','Cancelled'].includes(j.status)).length
+ };
+}
