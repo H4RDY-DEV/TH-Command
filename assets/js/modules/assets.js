@@ -46,9 +46,17 @@ export function renderAssets(){
 
     <section class="panel">
       ${filtered.length ? `<div class="table-wrap"><table>
-        <thead><tr><th>Asset</th><th>Category</th><th>Manufacturer</th><th>Model</th><th>Quantity</th><th>Available</th><th>Location</th><th>Status</th><th>Daily rate</th><th>Service due</th><th></th></tr></thead>
+        <thead><tr><th>Asset & actions</th><th>Category</th><th>Manufacturer</th><th>Model</th><th>Quantity</th><th>Available</th><th>Location</th><th>Status</th><th>Daily rate</th><th>Service due</th></tr></thead>
         <tbody>${filtered.map(asset=>`<tr>
-          <td><strong>${escapeHtml(asset.name)}</strong><br><small class="muted">${asset.id} · ${escapeHtml(asset.serial||'No serial')}</small></td>
+          <td class="asset-primary-cell">
+            <strong>${escapeHtml(asset.name)}</strong><br>
+            <small class="muted">${asset.id} · ${escapeHtml(asset.serial||'No serial')}</small>
+            <div class="actions asset-actions asset-actions-inline">
+              <button class="button small edit-asset" data-id="${asset.id}">Edit</button>
+              <button class="button small qr-asset" data-id="${asset.id}">QR Label</button>
+              <button class="button small danger remove-asset" data-id="${asset.id}">Remove</button>
+            </div>
+          </td>
           <td>${escapeHtml(asset.category||'—')}</td>
           <td>${escapeHtml(asset.manufacturer||'—')}</td>
           <td>${escapeHtml(asset.model||'—')}</td>
@@ -58,7 +66,6 @@ export function renderAssets(){
           <td>${assetStatusBadge(asset.status)}</td>
           <td>${money(asset.dailyRate)}</td>
           <td>${date(asset.serviceDue)}</td>
-          <td><div class="actions asset-actions"><button class="button small edit-asset" data-id="${asset.id}">Edit</button><button class="button small qr-asset" data-id="${asset.id}">QR Label</button><button class="button small danger remove-asset" data-id="${asset.id}">Remove</button></div></td>
         </tr>`).join('')}</tbody>
       </table></div>` : `<div class="empty-state"><h3>No assets found</h3><p>Adjust your filters or create a new asset.</p></div>`}
     </section>`;
@@ -117,7 +124,7 @@ function openAssetModal(id=null){
       <label class="full">Notes<textarea name="notes">${escapeHtml(asset.notes)}</textarea></label>
     </div></div>
     <div class="modal-foot">
-      ${existing?'<button type="button" class="button danger" id="delete-asset">Delete</button>':''}
+      ${existing?'<button type="button" class="button danger" id="remove-asset-from-edit">Remove asset</button>':''}
       <button type="button" class="button" data-close>Cancel</button>
       <button class="button primary" type="submit">Save asset</button>
     </div>
@@ -140,13 +147,9 @@ function openAssetModal(id=null){
     window.dispatchEvent(new Event('th:rerender'));
   };
 
-  wrap.querySelector('#delete-asset')?.addEventListener('click',()=>{
-    if(confirm(`Delete ${asset.id} – ${asset.name}?`)){
-      saveAssets(assets.filter(a=>a.id!==id));
-      wrap.remove();
-      toast('Asset deleted');
-      window.dispatchEvent(new Event('th:rerender'));
-    }
+  wrap.querySelector('#remove-asset-from-edit')?.addEventListener('click',()=>{
+    wrap.remove();
+    openRemoveAssetModal(id);
   });
 }
 
