@@ -1,4 +1,3 @@
-TH Command v9.0.7
-- Live search function
-- Status filter function
-- Dashboard refresh event
+# v9.0.8 Patch
+- Added live search hook
+- Added status badge styles
